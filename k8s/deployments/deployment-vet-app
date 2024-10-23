@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vetCare-app-deployment
+  labels:
+    app: vetCare-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vetCare-app
+  template:
+    metadata:
+      labels:
+        app: vetCare-app
+    spec:
+      containers:
+      - name: config-server
+        image: springcommunity/spring-petclinic-config-server
+        ports:
+        - containerPort: 8888
+      - name: discovery-server
+        image: springcommunity/spring-petclinic-discovery-server
+        ports:
+        - containerPort: 8761
+      - name: customers-service
+        image: springcommunity/spring-petclinic-customers-service
+        ports:
+        - containerPort: 8081
+      - name: visits-service
+        image: springcommunity/spring-petclinic-visits-service
+        ports:
+        - containerPort: 8082
+      - name: vets-service
+        image: springcommunity/spring-petclinic-vets-service
+        ports:
+        - containerPort: 8083
+      - name: api-gateway
+        image: springcommunity/spring-petclinic-api-gateway
+        ports:
+        - containerPort: 8080
+      - name: tracing-server
+        image: openzipkin/zipkin
+        ports:
+        - containerPort: 9411
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vetCare-app-service
+spec:
+  selector:
+    app: vetCare-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vetCare-app-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: vetcare.example.com
+    http:
+      paths:
+      - path: /hello
+        pathType: Prefix
+        backend:
+          service:
+            name: vetCare-app-service
+            port:
+              number: 80
