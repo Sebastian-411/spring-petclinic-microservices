@@ -33,15 +33,13 @@ jobs:
 
     - name: Install or Upgrade Linkerd
       run: |
-        echo "1: Verificando si Linkerd ya está instalado..."
+        echo "1: Verificando si Linkerd ya está instalado en aks..."
         
+        curl -sL https://run.linkerd.io/install | sh  
+        export PATH=$PATH:/home/$(whoami)/.linkerd2/bin
+
         if ! kubectl get namespace linkerd > /dev/null 2>&1; then
           echo "Linkerd no encontrado. Instalando..."
-          
-          curl -sL https://run.linkerd.io/install | sh
-          
-          export PATH=$PATH:/home/$(whoami)/.linkerd2/bin
-          
           
           linkerd install --crds | kubectl apply -f -
           
@@ -50,7 +48,7 @@ jobs:
           linkerd viz install | kubectl apply -f -
         else
           linkerd upgrade | kubectl apply -f -
-                  fi
+        fi
         
         kubectl get deploy -o yaml | linkerd inject - | kubectl apply -f -
 
