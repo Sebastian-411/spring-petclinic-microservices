@@ -1,0 +1,27 @@
+name: Deploy to Kubernetes with Argo CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+
+    - name: Log in to Argo CD
+      run: |
+        argocd login 13.91.106.157 --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
+
+    - name: Sync application with Argo CD
+      run: |
+        argocd app sync mi-aplicacion
