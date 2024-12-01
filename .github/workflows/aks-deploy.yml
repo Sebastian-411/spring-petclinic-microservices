@@ -31,6 +31,9 @@ jobs:
         echo "Listing AKS nodes..."
         kubectl get nodes
 
+        kubectl apply -f k8s/ --recursive
+
+
     - name: Install or Upgrade Linkerd
       run: |
         echo "1: Verificando si Linkerd ya está instalado en AKS..."
