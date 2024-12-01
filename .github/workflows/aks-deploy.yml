@@ -33,24 +33,41 @@ jobs:
 
     - name: Install or Upgrade Linkerd
       run: |
-        echo "1: Verificando si Linkerd ya está instalado en aks..."
+        echo "1: Verificando si Linkerd ya está instalado en AKS..."
         
+        # Instalar el CLI de Linkerd si aún no está instalado
+        echo "2: Descargando e instalando el CLI de Linkerd..."
         curl -sL https://run.linkerd.io/install | sh  
         export PATH=$PATH:/home/$(whoami)/.linkerd2/bin
 
+        # Verificar si Linkerd ya está instalado en el clúster
+        echo "3: Verificando si Linkerd está instalado en el namespace..."
         if ! kubectl get namespace linkerd > /dev/null 2>&1; then
-          echo "Linkerd no encontrado. Instalando..."
-          
+          echo "4: Linkerd no encontrado. Instalando..."
+
+          # Instalar los CRDs de Linkerd
+          echo "5: Instalando CRDs de Linkerd..."
           linkerd install --crds | kubectl apply -f -
           
+          # Instalar el plano de control de Linkerd
+          echo "6: Instalando el plano de control de Linkerd..."
           linkerd install | kubectl apply -f -
-                    
+
+          # Instalar la extensión viz de Linkerd (opcional)
+          echo "7: Instalando la extensión viz de Linkerd..."
           linkerd viz install | kubectl apply -f -
         else
+          echo "8: Linkerd ya está instalado. Actualizando..."
+
+          # Realizar la actualización de Linkerd si ya está presente
+          echo "9: Actualizando Linkerd..."
           linkerd upgrade | kubectl apply -f -
         fi
-        
+
+        # Inyectar Linkerd en los despliegues existentes
+        echo "10: Inyectando Linkerd en los despliegues existentes..."
         kubectl get deploy -o yaml | linkerd inject - | kubectl apply -f -
+        echo "11: Finalizado el proceso de instalación o actualización de Linkerd."
 
     - name: Install KEDA
       run: |
