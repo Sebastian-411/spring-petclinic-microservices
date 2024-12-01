@@ -31,19 +31,27 @@ jobs:
         echo "Listing AKS nodes..."
         kubectl get nodes
 
-    - name: Install Linkerd
+    - name: Install or Upgrade Linkerd
       run: |
-        echo "1"
-        curl -sL https://run.linkerd.io/install | sh
-        echo "2"
-        export PATH=$PATH:/home/$(whoami)/.linkerd2/bin
-        echo "3"
-        linkerd install --crds | kubectl apply -f -
-        echo "5"
-        linkerd install | kubectl apply -f -
-        echo "7"
-        linkerd viz install | kubectl apply -f -
-        echo "9"
+        echo "1: Verificando si Linkerd ya está instalado..."
+        
+        if ! kubectl get namespace linkerd > /dev/null 2>&1; then
+          echo "Linkerd no encontrado. Instalando..."
+          
+          curl -sL https://run.linkerd.io/install | sh
+          
+          export PATH=$PATH:/home/$(whoami)/.linkerd2/bin
+          
+          
+          linkerd install --crds | kubectl apply -f -
+          
+          linkerd install | kubectl apply -f -
+                    
+          linkerd viz install | kubectl apply -f -
+        else
+          linkerd upgrade | kubectl apply -f -
+                  fi
+        
         kubectl get deploy -o yaml | linkerd inject - | kubectl apply -f -
 
     - name: Install KEDA
