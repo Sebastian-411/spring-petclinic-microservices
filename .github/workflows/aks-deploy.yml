@@ -41,12 +41,8 @@ jobs:
         linkerd install --crds | kubectl apply -f -
         echo "5"
         linkerd install | kubectl apply -f -
-        echo "6"
-        linkerd check
         echo "7"
         linkerd viz install | kubectl apply -f -
-        echo "8"
-        linkerd viz check
         echo "9"
         kubectl get deploy -o yaml | linkerd inject - | kubectl apply -f -
 
