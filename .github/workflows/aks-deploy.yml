@@ -31,8 +31,16 @@ jobs:
         echo "Listing AKS nodes..."
         kubectl get nodes
 
+    - name: Install KEDA
+      run: |
+        helm repo add kedacore https://kedacore.github.io/charts
+        helm repo update
+        helm install keda kedacore/keda --namespace keda --create-namespace
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+        helm install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace
+        kubectl apply --server-side -f https://github.com/kedacore/keda/releases/download/v2.16.0/keda-2.16.0-crds.yaml
         kubectl apply -f k8s/ --recursive
-
 
     - name: Install or Upgrade Linkerd
       run: |
@@ -71,15 +79,3 @@ jobs:
         echo "10: Inyectando Linkerd en los despliegues existentes..."
         kubectl get deploy -o yaml | linkerd inject - | kubectl apply -f -
         echo "11: Finalizado el proceso de instalación o actualización de Linkerd."
-
-    - name: Install KEDA
-      run: |
-        helm repo add kedacore https://kedacore.github.io/charts
-        helm repo update
-        helm install keda kedacore/keda --namespace keda --create-namespace
-        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-        helm repo update
-        helm install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace
-        kubectl apply --server-side -f https://github.com/kedacore/keda/releases/download/v2.16.0/keda-2.16.0-crds.yaml
-        kubectl apply -f k8s/ --recursive
-
