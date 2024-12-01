@@ -33,15 +33,23 @@ jobs:
 
     - name: Install Linkerd
       run: |
-        echo "Installing Linkerd..."
+        echo "1"
         curl -sL https://run.linkerd.io/install | sh
+        echo "2"
         export PATH=$PATH:/home/$(whoami)/.linkerd2/bin
+        echo "3"
         linkerd check --pre
+        echo "4"
         linkerd install --crds | kubectl apply -f -
+        echo "5"
         linkerd install | kubectl apply -f -
+        echo "6"
         linkerd check
+        echo "7"
         linkerd viz install | kubectl apply -f -
+        echo "8"
         linkerd viz check
+        echo "9"
         kubectl get deploy -o yaml | linkerd inject - | kubectl apply -f -
 
     - name: Install KEDA
@@ -53,6 +61,5 @@ jobs:
         helm repo update
         helm install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace
         kubectl apply --server-side -f https://github.com/kedacore/keda/releases/download/v2.16.0/keda-2.16.0-crds.yaml
-        kubectl apply -f k8s/ --recursive
         kubectl apply -f k8s/ --recursive
 
