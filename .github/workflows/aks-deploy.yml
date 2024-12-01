@@ -36,8 +36,8 @@ jobs:
         # Install Linkerd
         curl -sL https://run.linkerd.io/install | sh
 
-        # Add Linkerd CLI to PATH (if not done already)
-        export PATH=$PATH:/home/ubuntu/.linkerd2/bin
+        # Add Linkerd CLI to PATH
+        export PATH=$PATH:/home/runner/.linkerd2/bin
 
         # Validate Linkerd installation
         linkerd check --pre
