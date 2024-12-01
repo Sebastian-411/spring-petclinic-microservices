@@ -38,8 +38,6 @@ jobs:
         echo "2"
         export PATH=$PATH:/home/$(whoami)/.linkerd2/bin
         echo "3"
-        linkerd check --pre
-        echo "4"
         linkerd install --crds | kubectl apply -f -
         echo "5"
         linkerd install | kubectl apply -f -
