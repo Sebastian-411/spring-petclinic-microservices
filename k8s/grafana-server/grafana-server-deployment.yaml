@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grafana
-  namespace: monitoring
+  namespace: default
   labels:
     app: grafana
 spec:
@@ -22,8 +22,8 @@ spec:
             - containerPort: 3000
           env:
             - name: GF_SECURITY_ADMIN_PASSWORD
-              value: "admin"  # Cambia esta contraseña si lo deseas
+              value: "admin"
             - name: GF_SECURITY_ADMIN_USER
               value: "admin"
             - name: GF_INSTALL_PLUGINS
-              value: "grafana-piechart-panel"  # Ejemplo de plugin (opcional)
+              value: "grafana-piechart-panel"

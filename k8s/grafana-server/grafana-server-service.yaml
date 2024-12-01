@@ -2,12 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: grafana
-  namespace: monitoring
+  namespace: default
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: grafana
   ports:
     - port: 80
       targetPort: 3000
-      nodePort: 30080
+      protocol: TCP
