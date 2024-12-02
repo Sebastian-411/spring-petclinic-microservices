@@ -75,3 +75,20 @@ helm repo update
 helm install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace
 kubectl apply --server-side -f https://github.com/kedacore/keda/releases/download/v2.16.0/keda-2.16.0-crds.yaml
 kubectl apply -f k8s/ --recursive
+
+
+## 5. Argos: 
+
+kubectl create namespace argocd
+kubectl apply -n kube-system -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl expose svc/argocd-server -n argocd --type=LoadBalancer --name=argocd-server
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d
+kubectl get svc -n argocd
+
+
+## 6. Prometheus y grafana: 
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+helm install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace

@@ -3,30 +3,36 @@ kind: Service
 metadata:
   annotations:
     kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"server","app.kubernetes.io/name":"argocd-server","app.kubernetes.io/part-of":"argocd"},"name":"argocd-server","namespace":"argocd"},"spec":{"ports":[{"name":"http","port":80,"protocol":"TCP","targetPort":8080},{"name":"https","port":443,"protocol":"TCP","targetPort":8080}],"selector":{"app.kubernetes.io/name":"argocd-server"}}}
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"creationTimestamp":"2024-12-01T22:06:59Z","finalizers":["service.kubernetes.io/load-balancer-cleanup"],"labels":{"app.kubernetes.io/component":"server","app.kubernetes.io/name":"argocd-server","app.kubernetes.io/part-of":"argocd"},"name":"argocd-server","namespace":"argocd","resourceVersion":"354952","uid":"614499d2-a4bf-4b9a-976e-0d73b074a107"},"spec":{"allocateLoadBalancerNodePorts":true,"clusterIP":"10.0.118.150","clusterIPs":["10.0.118.150"],"externalTrafficPolicy":"Cluster","internalTrafficPolicy":"Cluster","ipFamilies":["IPv4"],"ipFamilyPolicy":"SingleStack","ports":[{"name":"http","nodePort":31386,"port":80,"protocol":"TCP","targetPort":8080},{"name":"https","nodePort":32047,"port":443,"protocol":"TCP","targetPort":8080}],"selector":{"app.kubernetes.io/name":"argocd-server"},"sessionAffinity":"None","type":"LoadBalancer"},"status":{"loadBalancer":{"ingress":[{"ip":"13.91.106.157"}]}}}
   creationTimestamp: "2024-12-01T22:06:59Z"
+  finalizers:
+  - service.kubernetes.io/load-balancer-cleanup
   labels:
     app.kubernetes.io/component: server
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
   name: argocd-server
   namespace: argocd
-  resourceVersion: "60486"
+  resourceVersion: "355780"
   uid: 614499d2-a4bf-4b9a-976e-0d73b074a107
 spec:
+  allocateLoadBalancerNodePorts: true
   clusterIP: 10.0.118.150
   clusterIPs:
   - 10.0.118.150
+  externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
   ipFamilies:
   - IPv4
   ipFamilyPolicy: SingleStack
   ports:
   - name: http
+    nodePort: 31386
     port: 80
     protocol: TCP
     targetPort: 8080
   - name: https
+    nodePort: 32047
     port: 443
     protocol: TCP
     targetPort: 8080
@@ -35,4 +41,6 @@ spec:
   sessionAffinity: None
   type: LoadBalancer
 status:
-  loadBalancer: {}
+  loadBalancer:
+    ingress:
+    - ip: 13.91.106.157
