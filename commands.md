@@ -86,9 +86,17 @@ kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.pas
 kubectl get svc -n argocd
 
 
-## 6. Prometheus y grafana: 
 
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
+# chao mesh 
 
-helm install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace
+curl -sSL https://mirrors.chaos-mesh.org/latest/install.sh | bash
+kubectl apply -f chaos-mesh.yml
+kubectl port-forward -n chaos-mesh svc/chaos-dashboard 2333:2333
+
+kubectl delete podchaos pod-failure-appointment -n default
+kubectl apply -f chaos-mesh.yml
+
+kubectl describe podchaos pod-failure-appointment -n default
+
+
+- Event-Driven Architecture
